@@ -24,12 +24,12 @@ const routes = [
     name: "Settings",
   },
   {
-    path: "/languages",
-    name: "Languages",
-  },
-  {
     path: "/aboutus",
     name: "About Us",
+  },
+  {
+    path: "/example",
+    name: "Example",
   },
 ];
 

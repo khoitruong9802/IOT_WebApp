@@ -1,65 +1,147 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import request from "../../utils/http";
+import { login as setLoginTrue } from "../../store/slices/authSlice";
+import { useDispatch } from "react-redux";
+import Loading from "../../components/Loading";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { loginCustomer } from "../../services/customerServices"
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const isAuth = useSelector(state => state.auth.isAuth);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: ""
+  });
+  const [errMessage, setErrMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const login = () => {
-    navigate("/overview");
-    // request.post("/customer/login", {
-    //   username,
-    //   password
-    // })
-    // .then((res) => {
-    //   if (res.status === 200) {
-    //     navigate("/overview");
-    //   }
-    // })
-    // .catch((err) => {
-    //   console.log(err);
-    // })
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/dashboard");
+    }
+  }, [isAuth, navigate])
 
-    // fetch("http://localhost:3001/api/v1/customer/login", {
-    //   method: "POST",
-    //   body: JSON.stringify({ username, password }),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   credentials: "include"
-    // }).then(ok => {
-    //   console.log(ok)
-    // }).catch(err => {
-    //   console.log(err)
-    // })
+  const login = async () => {
+    setIsLoading(true);
+    try {      
+      const res = await loginCustomer(formData);
+      if (res.status === 200) {
+        localStorage.setItem("refreshToken", res.data.refresh_token);
+        localStorage.setItem("accessToken", res.data.access_token);
+        dispatch(setLoginTrue());
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setErrMessage("Sorry, your password was incorrect. Please double-check your password.");
+      console.log(err);
+    }
+    setIsLoading(false);
+
+
+    // request.post("/customer/login", formData)
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       localStorage.setItem("refreshToken", res.data.refresh_token);
+    //       localStorage.setItem("accessToken", res.data.access_token);
+    //       dispatch(loginCustomer());
+    //       navigate("/dashboard");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     setErrMessage("Sorry, your password was incorrect. Please double-check your password.");
+    //     console.log(err);
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   })
   }
 
   return (
-    <div className="flex justify-center items-start bg-gray-200 h-screen">
-      <div className="flex flex-col gap-y-2 mt-10 bg-white p-4 rounded-lg">
-        <p className="text-center text-red-700 text-lg font-bold">SIGN IN</p>
-        <div className="flex flex-col">
-          <label htmlFor="username">Username</label>
-          <input onChange={(e) => {
-            setUsername(e.target.value)
-          }} value={username} className="border border-blue-500 rounded-md" id="username" type="text" />
+    <Loading isLoading={isLoading}>
+      <div className="flex justify-center items-start h-screen">
+        <div className="flex flex-col gap-y-4">
+          <div className="flex flex-col gap-y-6 mt-10 p-8 rounded-md w-[350px] border border-blue-300">
+            <p className="text-center text-xl font-bold">Smart farm</p>
+            <div className="flex flex-col gap-y-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  id="username"
+                  value={formData.username}
+                  onChange={(e) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      username: e.target.value
+                    }))
+                  }}
+                  className="block w-full pt-3 pb-1 px-3 text-gray-900 bg-transparent rounded-md border border-blue-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=""
+                  required
+                />
+                <label
+                  htmlFor="username"
+                  className={`cursor-text absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2.5 left-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3`}
+                >
+                  Username
+                </label>
+              </div>
+
+              <div className="relative">
+                <input
+                  type="password"
+                  id="password"
+                  value={formData.password}
+                  onChange={(e) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      password: e.target.value
+                    }))
+                  }}
+                  className="block w-full pt-3 pb-1 px-3 text-gray-900 bg-transparent rounded-md border border-blue-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=""
+                  required
+                />
+                <label
+                  htmlFor="password"
+                  className={`cursor-text absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2.5 left-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3`}
+                >
+                  Password
+                </label>
+              </div>
+
+              <button
+                onClick={login}
+                className="bg-blue-500 rounded-xl font-medium text-white p-[6px] mt-1 hover:bg-blue-600"
+              >
+                Log in
+              </button>
+
+              <p className="text-red-600 text-sm">{errMessage}</p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="w-[110px] h-[1px] bg-gray-300"></div>
+              <p className="text-sm font-medium text-gray-500">OR</p>
+              <div className="w-[110px] h-[1px] bg-gray-300"></div>
+            </div>
+
+            <div className="flex justify-center cursor-pointer">
+              <p className="text-sm font-bold text-gray-500">Log in with Google</p>
+            </div>
+
+            <div className="text-center cursor-pointer">
+              <p className="text-xs text-gray-700">Forgot password?</p>
+            </div>
+          </div>
+          <div className="border border-blue-300 p-4 rounded-md text-center">
+            <p>Don&apos;t have an account? <span className="text-blue-500 font-bold cursor-pointer"><Link to="/signup">Sign up</Link></span></p>
+          </div>
         </div>
-        <div className="flex flex-col">
-          <label htmlFor="password">Password</label>
-          <input onChange={(e) => {
-            setPassword(e.target.value)
-          }} value={password} className="border border-blue-500 rounded-md" id="password" type="text" />
-        </div>
-        <button
-          onClick={login}
-          className="bg-blue-600 rounded-lg text-white p-1"
-        >
-          Login
-        </button>
       </div>
-    </div>
+    </Loading>
   )
 }
 

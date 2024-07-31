@@ -1,5 +1,24 @@
 import logo from "../../../../assets/images/logo.svg"
 
+const routes = [
+  {
+    path: "/home",
+    name: "Home",
+  },
+  {
+    path: "/about",
+    name: "About",
+  },
+  {
+    path: "/service",
+    name: "Service",
+  },
+  {
+    path: "/contactus",
+    name: "Contact Us",
+  }
+];
+
 const Header = () => {
   return (
     <div className="flex h-[60px] border-b-2 border-gray-200 items-center justify-between px-6">
