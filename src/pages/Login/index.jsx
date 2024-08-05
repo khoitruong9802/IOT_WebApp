@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import Loading from "../../components/Loading";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { loginCustomer } from "../../services/customerServices"
+import { loginUser } from "../../services/userServices"
 
 const Login = () => {
   const isAuth = useSelector(state => state.auth.isAuth);
@@ -27,7 +27,7 @@ const Login = () => {
   const login = async () => {
     setIsLoading(true);
     try {      
-      const res = await loginCustomer(formData);
+      const res = await loginUser(formData);
       if (res.status === 200) {
         localStorage.setItem("refreshToken", res.data.refresh_token);
         localStorage.setItem("accessToken", res.data.access_token);
@@ -39,24 +39,6 @@ const Login = () => {
       console.log(err);
     }
     setIsLoading(false);
-
-
-    // request.post("/customer/login", formData)
-    //   .then((res) => {
-    //     if (res.status === 200) {
-    //       localStorage.setItem("refreshToken", res.data.refresh_token);
-    //       localStorage.setItem("accessToken", res.data.access_token);
-    //       dispatch(loginCustomer());
-    //       navigate("/dashboard");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     setErrMessage("Sorry, your password was incorrect. Please double-check your password.");
-    //     console.log(err);
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   })
   }
 
   return (

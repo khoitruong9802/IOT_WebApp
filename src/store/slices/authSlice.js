@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const checkIsAuth = () => {
-  const isAuth = localStorage.getItem("refreshToken") ? true : false;
-  console.log(isAuth);
   return localStorage.getItem("refreshToken") ? true : false;
 }
 

@@ -1,17 +1,17 @@
 import request from "../utils/http";
 import axios from "axios";
 
-export const loginCustomer = async (data) => {
+export const loginUser = async (data) => {
   const res = await request.post(
-    "/customer/login",
+    "/user/login",
     data
   );
   return res;
 };
 
-export const createCustomer = async (data) => {
+export const createUser = async (data) => {
   const res = await request.post(
-    "/customer",
+    "/user",
     data
   );
   return res;
@@ -20,7 +20,7 @@ export const createCustomer = async (data) => {
 export const getNewToken = async (refreshToken) => {
   let res;
   try {    
-    res = await axios.post(`${import.meta.env.VITE_API_URL}/customer/refresh-token`, {}, {
+    res = await axios.post(`${import.meta.env.VITE_API_URL}/user/refresh-token`, {}, {
       headers: {
         Authorization: `Bearer ${refreshToken}`
       }
@@ -31,14 +31,14 @@ export const getNewToken = async (refreshToken) => {
   return res?.data;
 };
 
-export const logoutCustomer = async () => {
-  const res = await request.post("/customer/logout");
+export const logoutUser = async () => {
+  const res = await request.post("/user/logout");
   return res.data;
 };
 
-// export const updateCustomer = async (id, data, accessToken) => {
+// export const updateUser = async (id, data, accessToken) => {
 //   const res = await request.put(
-//     `/customer/update-customer/${id}`,
+//     `/user/update-user/${id}`,
 //     data,
 //     {
 //       headers: {

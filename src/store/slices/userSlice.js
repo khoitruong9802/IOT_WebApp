@@ -10,7 +10,7 @@ export const counterSlice = createSlice({
     refreshToken: "",
   },
   reducers: {
-    updateCustomer: (state, action) => {
+    updateUser: (state, action) => {
       const {
         id = "",
         fullname = "",
@@ -25,7 +25,7 @@ export const counterSlice = createSlice({
       state.accessToken = accessToken ? accessToken : state.accessToken;
       state.refreshToken = refreshToken ? refreshToken : state.refreshToken;
     },
-    resetCustomer: (state) => {
+    resetUser: (state) => {
       state.id = "";
       state.fullname = "";
       state.username = "";
@@ -36,6 +36,6 @@ export const counterSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { updateCustomer, resetCustomer } = counterSlice.actions
+export const { updateUser, resetUser } = counterSlice.actions
 
 export default counterSlice.reducer

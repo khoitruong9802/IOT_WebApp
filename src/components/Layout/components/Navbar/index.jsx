@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -24,7 +24,7 @@ const routes = [
     name: "Settings",
   },
   {
-    path: "/aboutus",
+    path: "/about",
     name: "About Us",
   },
   {

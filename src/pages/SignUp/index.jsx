@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { createCustomer } from "../../services/customerServices"
+import { createUser } from "../../services/userServices"
 
 const checkUserInfo = (formData) => {
   if (formData.full_name.length === 0) {
@@ -44,7 +44,7 @@ const SignUp = () => {
     if (isUserValid) {
       setIsLoading(true);
       try {
-        const res = await createCustomer(formData);
+        const res = await createUser(formData);
         if (res.status === 200) {
           navigate("/login");
         }

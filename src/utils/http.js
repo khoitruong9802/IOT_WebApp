@@ -1,6 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { getNewToken } from "../services/customerServices"
+import { getNewToken } from "../services/userServices"
 
 const request = axios.create({
   baseURL: import.meta.env.VITE_API_URL
