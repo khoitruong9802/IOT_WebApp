@@ -1,13 +1,10 @@
-import { useState, useEffect, createContext, useContext } from "react";
-import mqtt from "mqtt";
+import { useState, useEffect } from "react";
 import request from "../../utils/http";
 import Loading from "../../components/Loading";
 import Modal from "../../components/Modal";
 import StationList from "./Station"
 import MemberList from "./Member"
 import ChartList from "./Chart"
-
-const MqttContext = createContext();
 
 const Header = () => {
   return (
@@ -570,23 +567,6 @@ const devices = [
 
 const Device = (props) => {
   const { icon, name, relayID, bgcolor, switchbgcolor } = props.data;
-  const { client, deviceStatus, setDeviceStatus } = useContext(MqttContext);
-
-  const handleDevice = () => {
-    setDeviceStatus(prev => prev.map((item, i) => i === relayID - 1 ? !item : item));
-
-    client.publish(
-      "khoitruong9802/feeds/relay" + relayID,
-      deviceStatus[relayID - 1] ? "0" : "1",
-      0,
-      (error) => {
-        if (error) {
-          console.log("Publish error: ", error);
-        }
-        console.log("Pulish ok!");
-      }
-    );
-  };
 
   return (
     <div
@@ -596,11 +576,11 @@ const Device = (props) => {
         {icon}
         <label className="inline-flex items-center cursor-pointer">
           <span className="text-white font-bold">
-            {deviceStatus[relayID - 1] ? "ON" : "OFF"}
+            {1 === 1 ? "ON" : "OFF"}
           </span>
           <input
-            checked={deviceStatus[relayID - 1]}
-            onChange={handleDevice}
+            checked={false}
+            onChange={() => false}
             type="checkbox"
             value=""
             className="sr-only peer"
@@ -653,80 +633,14 @@ const Body = () => {
 };
 
 function Dashboard() {
-  const [client, setClient] = useState(null);
-  const [deviceStatus, setDeviceStatus] = useState([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
-  const [isLoading, setIsLoading] = useState(true);
-
-
-  const mqttConnect = (host, mqttOption) => {
-    setClient(mqtt.connect(host, mqttOption));
-  };
-
-  useEffect(() => {
-    if (client) {
-      console.log(client);
-      client.on("connect", () => {
-        console.log("Connect to adafruit broker");
-
-        client.subscribe("khoitruong9802/feeds/relay1", 0, (error) => {
-          if (error) {
-            console.log("Subscribe to topics error", error);
-            return;
-          }
-          console.log("Subcribe ok!");
-          setIsLoading(false);
-        });
-      });
-      client.on("error", (err) => {
-        console.error("Connection error: ", err);
-        client.end();
-      });
-      client.on("reconnect", () => {
-        console.log("Reconnecting");
-      });
-      client.on("message", (topic, message) => {
-        const payload = { topic, message: message.toString() };
-        console.log(payload);
-
-        if (topic === "khoitruong9802/feeds/relay1") {
-          if (message.toString() === "0") {
-            setDeviceStatus(prev => prev.map((item, index) => index == 0 ? false : item));
-          } else {
-            setDeviceStatus(prev => prev.map((item, index) => index == 0 ? true : item));
-          }
-        }
-      });
-    }
-  }, [client]);
-
-  useEffect(() => {
-    console.log("Check main");
-  });
-
-  useEffect(() => {
-    mqttConnect("wss://io.adafruit.com:443", {
-      username: import.meta.env.VITE_AIO_USER,
-      password: import.meta.env.VITE_AIO_KEY,
-    });
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <Loading isLoading={isLoading}>
-      <MqttContext.Provider value={{ client, deviceStatus, setDeviceStatus }}>
         <div className="flex flex-col p-4 gap-y-4 w-full">
           <Header />
           <Body />
         </div>
-      </MqttContext.Provider>
     </Loading>
   );
 }

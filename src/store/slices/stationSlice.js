@@ -4,7 +4,7 @@ export const stationSlice = createSlice({
   name: 'station',
   initialState: {
     value: [],
-    selected: 0
+    selected: null
   },
   reducers: {
     setStation: (state, action) => {

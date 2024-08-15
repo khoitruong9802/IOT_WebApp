@@ -185,6 +185,7 @@ const StationList = () => {
   }
 
   useEffect(() => {
+    console.log("fetch station")
     const fetchData = async () => {
       try {
         const res = await getStation();
@@ -220,9 +221,7 @@ const StationList = () => {
           <Station key={item._id} id={item._id} name={item.name} description={item.description} selected={item._id === selectedStation} />
         ))}
       </div>
-      <Modal isOpen={showStationForm} onClose={() => {
-        setShowStationForm(false)
-      }}>
+      <Modal isOpen={showStationForm} onClose={closeStationForm}>
         <StationCreateForm onClose={closeStationForm} />
       </Modal>
     </div>

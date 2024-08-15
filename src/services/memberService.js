@@ -9,3 +9,13 @@ export const getMemberOfStation = async (stationId) => {
   }
   return res;
 }
+
+export const addMemberToStation = async (stationId, username) => {
+  let res;
+  try {
+    res = await request.post(`/station/${stationId}/member`, username);
+  } catch (error) {
+    console.log(error)
+  }
+  return res;
+}
